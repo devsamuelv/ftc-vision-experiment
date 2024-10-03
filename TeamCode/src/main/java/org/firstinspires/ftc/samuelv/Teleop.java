@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.samuelv;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -10,12 +11,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.ArrayList;
 
+@TeleOp(name = "Apriltag Pose Estimation Teleop")
 public class Teleop extends LinearOpMode {
-    ComponentMap component_map;
+    DeviceMap device_map;
     VisionPortal portal_one, portal_two;
     AprilTagProcessor processor_one, processor_two;
 
@@ -27,7 +31,7 @@ public class Teleop extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        component_map = new ComponentMap(hardwareMap);
+        device_map = new DeviceMap(hardwareMap);
 
         int[] viewIds = VisionPortal.makeMultiPortalView(2, VisionPortal.MultiPortalLayout.VERTICAL);
 
@@ -36,18 +40,27 @@ public class Teleop extends LinearOpMode {
         int portal1ViewId = viewIds[0];
         int portal2ViewId = viewIds[1];
 
-        processor_one = AprilTagProcessor.easyCreateWithDefaults();
-        processor_two = AprilTagProcessor.easyCreateWithDefaults();
+        processor_one = new AprilTagProcessor.Builder()
+                .setCameraPose(camera_one_position, camera_one_orientation)
+                .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary())
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .build();
+
+        processor_two = new AprilTagProcessor.Builder()
+                .setCameraPose(camera_two_position, camera_two_orientation)
+                .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary())
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .build();
 
         VisionPortal.Builder portal_builder_one = new VisionPortal.Builder();
-        portal_builder_one.setCamera(component_map.camera_one);
+        portal_builder_one.setCamera(device_map.camera_one);
         portal_builder_one.setLiveViewContainerId(portal1ViewId);
         portal_builder_one.addProcessor(processor_one);
 
         portal_one = portal_builder_one.build();
 
         VisionPortal.Builder portal_builder_two = new VisionPortal.Builder();
-        portal_builder_two.setCamera(component_map.camera_two);
+        portal_builder_two.setCamera(device_map.camera_two);
         portal_builder_two.setLiveViewContainerId(portal2ViewId);
         portal_builder_two.addProcessor(processor_two);
 
