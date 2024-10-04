@@ -4,6 +4,8 @@
 *.ap_
 *.aab
 
+.venv/
+
 !libs/*.aar
 
 # Files for the ART/Dalvik VM

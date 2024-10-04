@@ -76,6 +76,10 @@ public class Teleop extends LinearOpMode {
             double robot_y_accum = 0;
 
             for (AprilTagDetection detection: detections_one) {
+                if (detection.robotPose.getPosition() == null) {
+                    return;
+                }
+
                 double x = detection.robotPose.getPosition().x;
                 double y = detection.robotPose.getPosition().y;
 
@@ -84,6 +88,10 @@ public class Teleop extends LinearOpMode {
             }
 
             for (AprilTagDetection detection: detections_two) {
+                if (detection.robotPose.getPosition() == null) {
+                    return;
+                }
+
                 double x = detection.robotPose.getPosition().x;
                 double y = detection.robotPose.getPosition().y;
 
@@ -94,10 +102,10 @@ public class Teleop extends LinearOpMode {
             double robot_x_average = robot_x_accum / (detections_one.size() + detections_two.size());
             double robot_y_average = robot_y_accum / (detections_one.size() + detections_two.size());
 
-            Pose2D robot_pose_estimated = new Pose2D(DistanceUnit.METER, robot_x_average, robot_y_average, AngleUnit.RADIANS, 0);
+            Pose2D robot_pose_estimated = new Pose2D(DistanceUnit.INCH, robot_x_average, robot_y_average, AngleUnit.RADIANS, 0);
 
-            telemetry.addData("Estimated Robot X", robot_pose_estimated.getX(DistanceUnit.METER));
-            telemetry.addData("Estimated Robot Y", robot_pose_estimated.getY(DistanceUnit.METER));
+            telemetry.addData("Estimated Robot X", robot_pose_estimated.getX(DistanceUnit.INCH));
+            telemetry.addData("Estimated Robot Y", robot_pose_estimated.getY(DistanceUnit.INCH));
             telemetry.update();
         }
     }
