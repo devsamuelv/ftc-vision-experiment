@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.samuelv;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -40,20 +42,25 @@ public class Teleop extends LinearOpMode {
         int portal1ViewId = viewIds[0];
         int portal2ViewId = viewIds[1];
 
+        // Logitech HD Pro
         processor_one = new AprilTagProcessor.Builder()
                 .setCameraPose(camera_one_position, camera_one_orientation)
                 .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary())
                 .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .setLensIntrinsics(891.3877232417505, 893.0875585945963, 373.17363100934125, 334.7210144425278)
                 .build();
 
+        // Random Logitech 720p camera
         processor_two = new AprilTagProcessor.Builder()
                 .setCameraPose(camera_two_position, camera_two_orientation)
                 .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary())
+                .setLensIntrinsics(1207.3590237232029, 1195.3795614903938, 404.31316330924466, 340.3436594592329)
                 .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                 .build();
 
         VisionPortal.Builder portal_builder_one = new VisionPortal.Builder();
         portal_builder_one.setCamera(device_map.camera_one);
+        portal_builder_one.setCameraResolution(new Size(800, 720));
         portal_builder_one.setLiveViewContainerId(portal1ViewId);
         portal_builder_one.addProcessor(processor_one);
 
@@ -61,6 +68,7 @@ public class Teleop extends LinearOpMode {
 
         VisionPortal.Builder portal_builder_two = new VisionPortal.Builder();
         portal_builder_two.setCamera(device_map.camera_two);
+        portal_builder_two.setCameraResolution(new Size(800, 720));
         portal_builder_two.setLiveViewContainerId(portal2ViewId);
         portal_builder_two.addProcessor(processor_two);
 
